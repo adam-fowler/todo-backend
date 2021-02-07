@@ -1,10 +1,11 @@
 import Foundation
-import FluentSQLiteDriver
+import FluentPostgresDriver
 import Hummingbird
 import HummingbirdFluent
 import HummingbirdFoundation
 
 func runApp(_ arguments: HummingbirdArguments) throws {
+    let env = HBEnvironment()
     let app = HBApplication(configuration: .init(address: .hostname(arguments.hostname, port: arguments.port)))
     // set encoder and decoder
     app.encoder = JSONEncoder()
@@ -19,13 +20,16 @@ func runApp(_ arguments: HummingbirdArguments) throws {
 
     // add Fluent
     app.addFluent()
-    // add sqlite database
-    app.fluent.databases.use(.sqlite(.memory), as: .sqlite)
+    guard let databaseURL = env.get("DATABASE_URL") else { fatalError("No DATABASE_URL environment variable") }
+    guard var postgresConfig = PostgresConfiguration(url: databaseURL) else {
+        fatalError("Failed to create postgres configuration using \(databaseURL)")
+    }
+    postgresConfig.tlsConfiguration = .forClient(certificateVerification: .none)
+    app.fluent.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     // add migrations
     app.fluent.migrations.add(CreateTodo())
-    // always migrate as SQLite is running in memory
+    // always migrate
     try app.fluent.migrate().wait()
-
 
     app.router.get("/") { _ in
         return "Hello"
