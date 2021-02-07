@@ -20,13 +20,11 @@ func runApp(_ arguments: HummingbirdArguments) throws {
     // add Fluent
     app.addFluent()
     // add sqlite database
-    app.fluent.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
+    app.fluent.databases.use(.sqlite(.memory), as: .sqlite)
     // add migrations
     app.fluent.migrations.add(CreateTodo())
-    // migrate
-    if arguments.migrate {
-        try app.fluent.migrate().wait()
-    }
+    // always migrate as SQLite is running in memory
+    try app.fluent.migrate().wait()
 
 
     app.router.get("/") { _ in
