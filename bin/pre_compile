@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+apt-get update -qq
+apt-get install -q -y libsqlite3-dev
