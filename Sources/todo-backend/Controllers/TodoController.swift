@@ -25,7 +25,7 @@ struct TodoController {
         return todo.save(on: request.db)
             .flatMap { _ in
                 todo.completed = false
-                todo.url = "http://\(host)/todos/\(todo.id!)"
+                todo.url = "https://\(host)/todos/\(todo.id!)"
                 return todo.update(on: request.db)
             }
             .map { request.response.status = .created; return todo }
