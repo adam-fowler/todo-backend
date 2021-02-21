@@ -12,8 +12,8 @@ let package = Package(
         .executable(name: "todo-backend", targets: ["todo-backend"]),
     ], 
     dependencies: [
-        .package(url: "https://github.com/hummingbird-project/hummingbird.git", .branch("main")),
-        .package(url: "https://github.com/hummingbird-project/hummingbird-fluent.git", .branch("main")),
+        .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "0.4.0"),
+        .package(url: "https://github.com/hummingbird-project/hummingbird-fluent.git", from: "0.1.0"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "0.3.0")
     ],
